@@ -22,11 +22,11 @@ class CustomDrawer extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Image.asset(
-                    "assets/rps_logo.png",
-                    width: 100,
-                    height: 100,
-                  ),
+                  // Image.asset(
+                  //   "assets/image.jpeg",
+                  //   width: 100,
+                  //   height: 100,
+                  // ),
                   SizedBox(
                     height: 10,
                   ),
