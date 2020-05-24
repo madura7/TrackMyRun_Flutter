@@ -1,14 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:foldable_sidebar/foldable_sidebar.dart';
-import 'package:tracking_my_run/src/login.dart';
 import 'src/sidebar.dart';
-<<<<<<< HEAD
-import 'src/homepage.dart';
-import 'src/login.dart';
-=======
-//import 'src/homepage.dart';
 import 'src/loginPage.dart';
->>>>>>> 0cf8813... Login UI
 
 void main() {
   runApp(MyApp());
