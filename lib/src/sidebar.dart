@@ -23,7 +23,7 @@ class CustomDrawer extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   // Image.asset(
-                  //   "assets/image.jpeg",
+                  //   "assets/rps_logo.png",
                   //   width: 100,
                   //   height: 100,
                   // ),

@@ -3,6 +3,7 @@ import 'package:foldable_sidebar/foldable_sidebar.dart';
 import 'src/sidebar.dart';
 import 'src/loginPage.dart';
 
+
 void main() {
   runApp(MyApp());
 }
@@ -46,6 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
           screenContents: LoginPage(),
           status: drawerStatus,
         ),
+        
         floatingActionButton: FloatingActionButton(
             backgroundColor: Colors.deepOrange,
             child: Icon(Icons.menu,color: Colors.white,),
@@ -58,7 +60,4 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
-
-
-
 

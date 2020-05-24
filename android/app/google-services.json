@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "845629505024",
+    "firebase_url": "https://trackmyrun-114e2.firebaseio.com",
+    "project_id": "trackmyrun-114e2",
+    "storage_bucket": "trackmyrun-114e2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:845629505024:android:1ce139027731ed6521e2e5",
+        "android_client_info": {
+          "package_name": "com.example.tracking_my_run"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "845629505024-7b2513104bo07enuphqfi2vaquv05ork.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDZKSDR6s6OPg8XVVaWjjepasyo4GWMtA8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "845629505024-7b2513104bo07enuphqfi2vaquv05ork.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
