@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tracking_my_run/src/Widget/bezierContainer.dart';
 import 'package:tracking_my_run/src/loginPage.dart';
@@ -13,6 +14,10 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final userNameController = TextEditingController();
+  final passwordController = TextEditingController();
+  final emailController = TextEditingController();
   Widget _backButton() {
     return InkWell(
       onTap: () {
@@ -34,7 +39,7 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
-  Widget _entryField(String title, {bool isPassword = false}) {
+  Widget _entryField(String title, TextEditingController _controller, {bool isPassword = false}) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10),
       child: Column(
@@ -49,6 +54,7 @@ class _SignUpPageState extends State<SignUpPage> {
           ),
           TextField(
               obscureText: isPassword,
+              controller: _controller,
               decoration: InputDecoration(
                   border: InputBorder.none,
                   fillColor: Color(0xfff3f3f4),
@@ -59,7 +65,12 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   Widget _submitButton() {
-    return Container(
+    return InkWell(
+      onTap: () {
+        Future<dynamic> staus =  signUpWithEmail(email: emailController.text.toString(), password: passwordController.text.toString());
+        
+      },
+      child: Container(
       width: MediaQuery.of(context).size.width,
       padding: EdgeInsets.symmetric(vertical: 15),
       alignment: Alignment.center,
@@ -80,7 +91,7 @@ class _SignUpPageState extends State<SignUpPage> {
         'Register Now',
         style: TextStyle(fontSize: 20, color: Colors.white),
       ),
-    );
+    ));
   }
 
   Widget _loginAccountLabel() {
@@ -143,9 +154,9 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget _emailPasswordWidget() {
     return Column(
       children: <Widget>[
-        _entryField("Username"),
-        _entryField("Email id"),
-        _entryField("Password", isPassword: true),
+        _entryField("Username", userNameController),
+        _entryField("Email id", emailController),
+        _entryField("Password", passwordController,isPassword: true),
       ],
     );
   }
@@ -191,5 +202,23 @@ class _SignUpPageState extends State<SignUpPage> {
         ),
       ),
     );
+  }
+
+  Future signUpWithEmail({
+    @required String email,
+    @required String password,
+  }) async {
+    try {
+      print(email + " - "+ password);
+      var authResult = await _firebaseAuth.createUserWithEmailAndPassword(
+          email: email, password: password);
+          print("12358621");
+          print(authResult.user);
+          Navigator.push(
+            context, MaterialPageRoute(builder: (context) => LoginPage()));
+      return 1; //authResult.user != null;
+    } catch (e) {
+      return e.message;
+    }
   }
 }

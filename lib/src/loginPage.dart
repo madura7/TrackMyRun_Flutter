@@ -1,4 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tracking_my_run/main.dart';
+import 'package:tracking_my_run/src/homepage.dart';
 import 'package:tracking_my_run/src/signup.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -14,10 +17,15 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+    final passwordController = TextEditingController();
+    final emailController = TextEditingController();
+
   Widget _backButton() {
     return InkWell(
       onTap: () {
-        Navigator.pop(context);
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => SignUpPage()));
       },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 10),
@@ -35,7 +43,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _entryField(String title, {bool isPassword = false}) {
+  Widget _entryField(String title, TextEditingController _controller, {bool isPassword = false}) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10),
       child: Column(
@@ -49,6 +57,7 @@ class _LoginPageState extends State<LoginPage> {
             height: 10,
           ),
           TextField(
+              controller: _controller,
               obscureText: isPassword,
               decoration: InputDecoration(
                   border: InputBorder.none,
@@ -60,28 +69,32 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _submitButton() {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      padding: EdgeInsets.symmetric(vertical: 15),
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(5)),
-          boxShadow: <BoxShadow>[
-            BoxShadow(
-                color: Colors.grey.shade200,
-                offset: Offset(2, 4),
-                blurRadius: 5,
-                spreadRadius: 2)
-          ],
-          gradient: LinearGradient(
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-              colors: [Color(0xfffbb448), Color(0xfff7892b)])),
-      child: Text(
-        'Login',
-        style: TextStyle(fontSize: 20, color: Colors.white),
-      ),
-    );
+    return InkWell(
+        onTap: () {
+          loginWithEmail(email: emailController.text.toString(), password: passwordController.text.toString());
+        },
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          padding: EdgeInsets.symmetric(vertical: 15),
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(5)),
+              boxShadow: <BoxShadow>[
+                BoxShadow(
+                    color: Colors.grey.shade200,
+                    offset: Offset(2, 4),
+                    blurRadius: 5,
+                    spreadRadius: 2)
+              ],
+              gradient: LinearGradient(
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  colors: [Color(0xfffbb448), Color(0xfff7892b)])),
+          child: Text(
+            'Login',
+            style: TextStyle(fontSize: 20, color: Colors.white),
+          ),
+        ));
   }
 
   Widget _divider() {
@@ -225,8 +238,8 @@ class _LoginPageState extends State<LoginPage> {
   Widget _emailPasswordWidget() {
     return Column(
       children: <Widget>[
-        _entryField("Email id"),
-        _entryField("Password", isPassword: true),
+        _entryField("Email id", emailController),
+        _entryField("Password", passwordController, isPassword: true),
       ],
     );
   }
@@ -275,5 +288,23 @@ class _LoginPageState extends State<LoginPage> {
         ],
       ),
     ));
+  }
+
+  Future loginWithEmail({
+    @required String email,
+    @required String password,
+  }) async {
+    try {
+      var user = await _firebaseAuth.signInWithEmailAndPassword(
+          email: email, password: password);
+
+        Navigator.push(
+              context, MaterialPageRoute(builder: (context) => FirstScreen()));
+        
+
+      return user != null;
+    } catch (e) {
+      return e.message;
+    }
   }
 }
