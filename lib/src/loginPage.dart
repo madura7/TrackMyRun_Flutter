@@ -217,7 +217,7 @@ class _LoginPageState extends State<LoginPage> {
       text: TextSpan(
           text: 'Track',
           style: GoogleFonts.portLligatSans(
-            textStyle: Theme.of(context).textTheme.headline4,
+            textStyle: Theme.of(context).textTheme.headline,
             fontSize: 30,
             fontWeight: FontWeight.w700,
             color: Color(0xffe46b10),

@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:tracking_my_run/src/Widget/bezierContainer.dart';
 import 'package:tracking_my_run/src/loginPage.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -15,6 +17,8 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final databaseReference = Firestore.instance;
+
   final userNameController = TextEditingController();
   final passwordController = TextEditingController();
   final emailController = TextEditingController();
@@ -39,7 +43,8 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
-  Widget _entryField(String title, TextEditingController _controller, {bool isPassword = false}) {
+  Widget _entryField(String title, TextEditingController _controller,
+      {bool isPassword = false}) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10),
       child: Column(
@@ -66,32 +71,33 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Widget _submitButton() {
     return InkWell(
-      onTap: () {
-        Future<dynamic> staus =  signUpWithEmail(email: emailController.text.toString(), password: passwordController.text.toString());
-        
-      },
-      child: Container(
-      width: MediaQuery.of(context).size.width,
-      padding: EdgeInsets.symmetric(vertical: 15),
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(5)),
-          boxShadow: <BoxShadow>[
-            BoxShadow(
-                color: Colors.grey.shade200,
-                offset: Offset(2, 4),
-                blurRadius: 5,
-                spreadRadius: 2)
-          ],
-          gradient: LinearGradient(
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-              colors: [Color(0xfffbb448), Color(0xfff7892b)])),
-      child: Text(
-        'Register Now',
-        style: TextStyle(fontSize: 20, color: Colors.white),
-      ),
-    ));
+        onTap: () {
+          Future<dynamic> staus = signUpWithEmail(
+              email: emailController.text.toString().trim(),
+              password: passwordController.text.toString());
+        },
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          padding: EdgeInsets.symmetric(vertical: 15),
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(5)),
+              boxShadow: <BoxShadow>[
+                BoxShadow(
+                    color: Colors.grey.shade200,
+                    offset: Offset(2, 4),
+                    blurRadius: 5,
+                    spreadRadius: 2)
+              ],
+              gradient: LinearGradient(
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  colors: [Color(0xfffbb448), Color(0xfff7892b)])),
+          child: Text(
+            'Register Now',
+            style: TextStyle(fontSize: 20, color: Colors.white),
+          ),
+        ));
   }
 
   Widget _loginAccountLabel() {
@@ -133,7 +139,7 @@ class _SignUpPageState extends State<SignUpPage> {
       text: TextSpan(
           text: 'd',
           style: GoogleFonts.portLligatSans(
-            textStyle: Theme.of(context).textTheme.headline4,
+            textStyle: Theme.of(context).textTheme.headline,
             fontSize: 30,
             fontWeight: FontWeight.w700,
             color: Color(0xffe46b10),
@@ -156,7 +162,7 @@ class _SignUpPageState extends State<SignUpPage> {
       children: <Widget>[
         _entryField("Username", userNameController),
         _entryField("Email id", emailController),
-        _entryField("Password", passwordController,isPassword: true),
+        _entryField("Password", passwordController, isPassword: true),
       ],
     );
   }
@@ -209,16 +215,77 @@ class _SignUpPageState extends State<SignUpPage> {
     @required String password,
   }) async {
     try {
-      print(email + " - "+ password);
-      var authResult = await _firebaseAuth.createUserWithEmailAndPassword(
-          email: email, password: password);
-          print("12358621");
-          print(authResult.user);
-          Navigator.push(
-            context, MaterialPageRoute(builder: (context) => LoginPage()));
+      print(email + " - " + password);
+      var authResult = await _firebaseAuth
+          .createUserWithEmailAndPassword(email: email, password: password)
+          .then((data) {
+        print(data.user.uid);
+        createRecord(data.user.uid, '', email, password);
+
+        // Navigator.push(
+        //     context, MaterialPageRoute(builder: (context) => LoginPage()));
+      }).catchError((onError) {
+        if (onError is PlatformException) {
+          if (onError.code == 'ERROR_EMAIL_ALREADY_IN_USE') {
+            _showDialog('Error', 'Email Already in use by another account');
+          }
+          if (onError.code == 'ERROR_INVALID_EMAIL') {
+            _showDialog(
+                'Error', 'Invalid Email. Please check your email again');
+          }
+          if (onError.code == 'ERROR_WEAK_PASSWORD') {
+            _showDialog(
+                'Error', 'Weak password. Please Choose a strong password');
+          }
+        }
+      });
+
       return 1; //authResult.user != null;
     } catch (e) {
+      print(e.message);
       return e.message;
     }
+  }
+
+  void createRecord(var uid, var username, var email, var password) async {
+    // await databaseReference.collection("users").document(uid).setData({
+    //   'title': 'Mastering Flutter',
+    //   'description': 'Programming Guide for Dart'
+    // });
+    DocumentReference ref = await databaseReference
+        .collection("users")
+        .add({'username': username, 'email': email, 'password': password});
+    print(ref.documentID);
+    _showDialog('Success', 'Successfully created');
+    clearFields();
+  }
+
+  void clearFields() {
+    userNameController.clear();
+    passwordController.clear();
+    emailController.clear();
+  }
+
+  void _showDialog(String title, String msg) {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text(title),
+          content: new Text(msg),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Ok"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }
