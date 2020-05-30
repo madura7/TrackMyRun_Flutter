@@ -247,25 +247,6 @@ class _SignUpPageState extends State<SignUpPage> {
     }
   }
 
-  void createRecord(var uid, var username, var email, var password) async {
-    // await databaseReference.collection("users").document(uid).setData({
-    //   'title': 'Mastering Flutter',
-    //   'description': 'Programming Guide for Dart'
-    // });
-    DocumentReference ref = await databaseReference
-        .collection("users")
-        .add({'username': username, 'email': email, 'password': password});
-    print(ref.documentID);
-    _showDialog('Success', 'Successfully created');
-    clearFields();
-  }
-
-  void clearFields() {
-    userNameController.clear();
-    passwordController.clear();
-    emailController.clear();
-  }
-
   void _showDialog(String title, String msg) {
     // flutter defined function
     showDialog(
@@ -287,5 +268,24 @@ class _SignUpPageState extends State<SignUpPage> {
         );
       },
     );
+  }
+
+  void createRecord(var uid, var username, var email, var password) async {
+    // await databaseReference.collection("users").document(uid).setData({
+    //   'title': 'Mastering Flutter',
+    //   'description': 'Programming Guide for Dart'
+    // });
+    DocumentReference ref = await databaseReference
+        .collection("users")
+        .add({'username': username, 'email': email, 'password': password});
+    print(ref.documentID);
+    _showDialog('Success', 'Successfully created');
+    clearFields();
+  }
+
+  void clearFields() {
+    userNameController.clear();
+    passwordController.clear();
+    emailController.clear();
   }
 }

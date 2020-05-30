@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:tracking_my_run/main.dart';
 import 'package:tracking_my_run/src/homepage.dart';
 import 'package:tracking_my_run/src/signup.dart';
@@ -18,8 +19,8 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-    final passwordController = TextEditingController();
-    final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final emailController = TextEditingController();
 
   Widget _backButton() {
     return InkWell(
@@ -43,7 +44,8 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _entryField(String title, TextEditingController _controller, {bool isPassword = false}) {
+  Widget _entryField(String title, TextEditingController _controller,
+      {bool isPassword = false}) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10),
       child: Column(
@@ -71,7 +73,9 @@ class _LoginPageState extends State<LoginPage> {
   Widget _submitButton() {
     return InkWell(
         onTap: () {
-          loginWithEmail(email: emailController.text.toString(), password: passwordController.text.toString());
+          loginWithEmail(
+              email: emailController.text.toString(),
+              password: passwordController.text.toString());
         },
         child: Container(
           width: MediaQuery.of(context).size.width,
@@ -295,16 +299,48 @@ class _LoginPageState extends State<LoginPage> {
     @required String password,
   }) async {
     try {
-      var user = await _firebaseAuth.signInWithEmailAndPassword(
-          email: email, password: password);
-
+      var user = await _firebaseAuth
+          .signInWithEmailAndPassword(email: email, password: password)
+          .then((onValue) {
         Navigator.push(
-              context, MaterialPageRoute(builder: (context) => FirstScreen()));
-        
+            context, MaterialPageRoute(builder: (context) => FirstScreen()));
+      }).catchError((onError) {
+        if (onError is PlatformException) {
+          if (onError.code == 'ERROR_USER_NOT_FOUND') {
+            _showDialog('Error', 'Invalid Email or Password');
+          }
+          if (onError.code == 'ERROR_WRONG_PASSWORD') {
+            _showDialog('Error', 'Invalid Password');
+          }
+        }
+      });
 
       return user != null;
     } catch (e) {
       return e.message;
     }
+  }
+
+  void _showDialog(String title, String msg) {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text(title),
+          content: new Text(msg),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Ok"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }
