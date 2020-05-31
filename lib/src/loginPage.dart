@@ -74,7 +74,7 @@ class _LoginPageState extends State<LoginPage> {
     return InkWell(
         onTap: () {
           loginWithEmail(
-              email: emailController.text.toString(),
+              email: emailController.text.toString().trim(),
               password: passwordController.text.toString());
         },
         child: Container(
@@ -303,7 +303,7 @@ class _LoginPageState extends State<LoginPage> {
           .signInWithEmailAndPassword(email: email, password: password)
           .then((onValue) {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => FirstScreen()));
+            context, MaterialPageRoute(builder: (context) => HomeScreen()));
       }).catchError((onError) {
         if (onError is PlatformException) {
           if (onError.code == 'ERROR_USER_NOT_FOUND') {
@@ -311,6 +311,9 @@ class _LoginPageState extends State<LoginPage> {
           }
           if (onError.code == 'ERROR_WRONG_PASSWORD') {
             _showDialog('Error', 'Invalid Password');
+          }
+          if (onError.code == 'ERROR_INVALID_EMAIL') {
+            _showDialog('Error', 'Invalid Email');
           }
         }
       });

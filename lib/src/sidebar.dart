@@ -1,13 +1,24 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tracking_my_run/src/loginPage.dart';
 
 class CustomDrawer extends StatelessWidget {
-
+  final String userName;
   final Function closeDrawer;
 
-  const CustomDrawer({Key key, this.closeDrawer}) : super(key: key);
+  const CustomDrawer({Key key, this.closeDrawer, this.userName})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    Future<LoginPage> _signOut() async {
+      await FirebaseAuth.instance.signOut();
+      print("Logout");
+
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => LoginPage()));
+    }
+
     MediaQueryData mediaQuery = MediaQuery.of(context);
     return Container(
       color: Colors.white,
@@ -30,11 +41,11 @@ class CustomDrawer extends StatelessWidget {
                   SizedBox(
                     height: 10,
                   ),
-                  Text("RetroPortal Studio")
+                  Text(userName)
                 ],
               )),
           ListTile(
-            onTap: (){
+            onTap: () {
               debugPrint("Tapped Profile");
             },
             leading: Icon(Icons.person),
@@ -81,7 +92,8 @@ class CustomDrawer extends StatelessWidget {
           ),
           ListTile(
             onTap: () {
-              debugPrint("Tapped Log Out");
+              //debugPrint("Tapped Log Out");
+              _signOut();
             },
             leading: Icon(Icons.exit_to_app),
             title: Text("Log Out"),

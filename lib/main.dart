@@ -1,16 +1,31 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:foldable_sidebar/foldable_sidebar.dart';
 import 'package:tracking_my_run/src/homepage.dart';
 import 'src/sidebar.dart';
 import 'src/loginPage.dart';
 
-
 void main() {
   runApp(MyApp());
 }
 
+Future<FirebaseUser> getUser() async {
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  return await _firebaseAuth.currentUser();
+}
+
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
+  void initState() {
+    getUser().then((user) {
+      if (user != null) {
+        HomeScreen();
+      } else {
+        LoginPage();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -24,41 +39,44 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
+// class MyHomePage extends StatefulWidget {
+//   @override
+//   _MyHomePageState createState() => _MyHomePageState();
+// }
 
-class _MyHomePageState extends State<MyHomePage> {
-  FSBStatus drawerStatus;
+// class _MyHomePageState extends State<MyHomePage> {
+//   FSBStatus drawerStatus;
 
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-
-      child: Scaffold(
-
-        body: FoldableSidebarBuilder(
-          drawerBackgroundColor: Colors.deepOrange,
-          drawer: CustomDrawer(closeDrawer: (){
-            setState(() {
-              drawerStatus = FSBStatus.FSB_CLOSE;
-            });
-          },),
-          screenContents: LoginPage(),
-          status: drawerStatus,
-        ),
-        
-        floatingActionButton: FloatingActionButton(
-            backgroundColor: Colors.deepOrange,
-            child: Icon(Icons.menu,color: Colors.white,),
-            onPressed: () {
-              setState(() {
-                drawerStatus = drawerStatus == FSBStatus.FSB_OPEN ? FSBStatus.FSB_CLOSE : FSBStatus.FSB_OPEN;
-              });
-            }),
-      ),
-    );
-  }
-}
-
+//   @override
+//   Widget build(BuildContext context) {
+//     return SafeArea(
+//       child: Scaffold(
+//         body: FoldableSidebarBuilder(
+//           drawerBackgroundColor: Colors.deepOrange,
+//           drawer: CustomDrawer(
+//             closeDrawer: () {
+//               setState(() {
+//                 drawerStatus = FSBStatus.FSB_CLOSE;
+//               });
+//             },
+//           ),
+//           screenContents: LoginPage(),
+//           status: drawerStatus,
+//         ),
+//         floatingActionButton: FloatingActionButton(
+//             backgroundColor: Colors.deepOrange,
+//             child: Icon(
+//               Icons.menu,
+//               color: Colors.white,
+//             ),
+//             onPressed: () {
+//               setState(() {
+//                 drawerStatus = drawerStatus == FSBStatus.FSB_OPEN
+//                     ? FSBStatus.FSB_CLOSE
+//                     : FSBStatus.FSB_OPEN;
+//               });
+//             }),
+//       ),
+//     );
+//   }
+// }
