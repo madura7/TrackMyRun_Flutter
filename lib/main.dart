@@ -1,82 +1,18 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:foldable_sidebar/foldable_sidebar.dart';
-import 'package:tracking_my_run/src/homepage.dart';
-import 'src/sidebar.dart';
-import 'src/loginPage.dart';
+import 'package:flutter/services.dart';
+
+import 'src/app.dart';
 
 void main() {
-  runApp(MyApp());
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.black,
+      statusBarIconBrightness: Brightness.light,
+      systemNavigationBarColor: Colors.black,
+      systemNavigationBarIconBrightness: Brightness.dark));
+
+  // SystemChrome.setPreferredOrientations([
+  //   DeviceOrientation.portraitUp,
+  //   DeviceOrientation.portraitDown
+  // ]) /*lock screen orientation*/ .then((_) => runApp(App()));
+  runApp(App());
 }
-
-Future<FirebaseUser> getUser() async {
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  return await _firebaseAuth.currentUser();
-}
-
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-  void initState() {
-    getUser().then((user) {
-      if (user != null) {
-        HomeScreen();
-      } else {
-        LoginPage();
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Tracking my Run',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        //visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: LoginPage(),
-    );
-  }
-}
-
-// class MyHomePage extends StatefulWidget {
-//   @override
-//   _MyHomePageState createState() => _MyHomePageState();
-// }
-
-// class _MyHomePageState extends State<MyHomePage> {
-//   FSBStatus drawerStatus;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return SafeArea(
-//       child: Scaffold(
-//         body: FoldableSidebarBuilder(
-//           drawerBackgroundColor: Colors.deepOrange,
-//           drawer: CustomDrawer(
-//             closeDrawer: () {
-//               setState(() {
-//                 drawerStatus = FSBStatus.FSB_CLOSE;
-//               });
-//             },
-//           ),
-//           screenContents: LoginPage(),
-//           status: drawerStatus,
-//         ),
-//         floatingActionButton: FloatingActionButton(
-//             backgroundColor: Colors.deepOrange,
-//             child: Icon(
-//               Icons.menu,
-//               color: Colors.white,
-//             ),
-//             onPressed: () {
-//               setState(() {
-//                 drawerStatus = drawerStatus == FSBStatus.FSB_OPEN
-//                     ? FSBStatus.FSB_CLOSE
-//                     : FSBStatus.FSB_OPEN;
-//               });
-//             }),
-//       ),
-//     );
-//   }
-// }

@@ -1,12 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:tracking_my_run/main.dart';
-import 'package:tracking_my_run/src/homepage.dart';
-import 'package:tracking_my_run/src/signup.dart';
+import 'package:tracking_my_run/src/pages/home/homepage.dart';
+import 'package:tracking_my_run/src/pages/auth/signup.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'Widget/bezierContainer.dart';
+import '../../Widget/bezierContainer.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key, this.title}) : super(key: key);

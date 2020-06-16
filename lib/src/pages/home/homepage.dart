@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:foldable_sidebar/foldable_sidebar.dart';
-import 'package:tracking_my_run/src/sidebar.dart';
+import 'package:tracking_my_run/src/pages/home/sidebar.dart';
 
 class HomeScreen extends StatefulWidget {
   @override

@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:tracking_my_run/src/loginPage.dart';
+import 'package:tracking_my_run/src/pages/auth/loginPage.dart';
 
 class CustomDrawer extends StatelessWidget {
   final String userName;
